@@ -62,7 +62,7 @@ MCUFLAGS = -mcpu=cortex-m7 -mlittle-endian
 MCUFLAGS += -mfloat-abi=hard -mfpu=fpv5-sp-d16
 MCUFLAGS += -mthumb
 
-DEBUGFLAGS = -O0 -g -gdwarf-2
+DEBUGFLAGS = -Og -g3 -gdwarf-2 -ggdb
 #DEBUGFLAGS = -O2
 
 DEPFLAGS += -MMD -MP -MF $(OBJDIR)/$(*D).d
@@ -103,7 +103,7 @@ $(RESULT).elf: $(OBJS)
 $(OBJDIR)/%.o : %.c
 	@echo "..... Making source (.c) files ....."
 	@echo "..... Compiling $<"
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(DEBUGFLAGS) $< -o $@
 
 $(OBJDIR)/%.o : %.s
 	@echo "..... Making assembler (.s) files ....." 
