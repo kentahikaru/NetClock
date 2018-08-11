@@ -768,4 +768,4 @@ FlagStatus CRYP_GetFlagStatus(uint8_t CRYP_FLAG)
 
 /**
   * @}
-  */ 
+  */

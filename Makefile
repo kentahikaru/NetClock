@@ -14,13 +14,52 @@ RESULT = $(OBJDIR)/$(PROJECT)
 SOURCES_S = startup/startup_stm32f746xx.s
 
 SOURCES_C = src/main.c
-#SOURCES_C += lib/Driver/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c
 #SOURCES_C += startup/sysmem.c
 SOURCES_C += startup/system_stm32f7xx.c
-#SOURCES_C += lib/Driver/BSP/STM32746G-Discovery/stm32746g_discovery.c
-#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_gpio.c
 
-#FreeRTOS^M
+#SOURCES_C += lib//BSP/STM32746G-Discovery_SPL/stm32746g_discovery.c
+#SOURCES_C += lib/Driver/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c
+
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/misc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_adc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_can.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_cec.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_crc.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_cryp.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_cryp_aes.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_cryp_des.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_cryp_tdes.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_dac.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_dbgmcu.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_dcmi.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_dma.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_dma2d.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_exti.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_flash.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_fmc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_gpio.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_hash.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_hash_md5.c
+#SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_hash_sha1.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_i2c.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_iwdg.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_lptim.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_ltdc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_pwr.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_qspi.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_rcc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_rng.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_rtc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_sai.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_sdmmc.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_spdifrx.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_spi.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_syscfg.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_tim.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_usart.c
+SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_wwdg.c
+
+#FreeRTOS
 #SOURCES_C += FreeRTOS/CMSIS_RTOS/cmsis_os.c
 SOURCES_C += FreeRTOS/portable/GCC/ARM_CM4F/port.c
 SOURCES_C += FreeRTOS/portable/MemMang/heap_4.c
@@ -30,6 +69,7 @@ SOURCES_C += FreeRTOS/queue.c
 SOURCES_C += FreeRTOS/tasks.c
 SOURCES_C += FreeRTOS/timers.c
 #SOURCES_C +=/FreeRTOS/event_groups.c
+
 
 
 
@@ -46,6 +86,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(basename $(SOURCES)) ))
 
 INCLUDES += -I . -I inc -I sys
 INCLUDES += -I src
+INCLUDES += -I lib/Config/
 INCLUDES += -I lib/Driver/CMSIS/Include
 INCLUDES += -I lib/Driver/CMSIS/Device/ST/STM32F7xx/Include
 INCLUDES += -I lib/Driver/BSP/STM32746G-Discovery_SPL/
@@ -56,7 +97,7 @@ INCLUDES += -IFreeRTOS/include
 INCLUDES += -IFreeRTOS/portable/GCC/ARM_CM4F
 
 
-DEFINES = -DSTM32 -DSTM32F7 -DSTM32F746xx -DSTM32F746NGHx -DSTM32F746G_DISCO 
+DEFINES = -DSTM32 -DSTM32F7 -DSTM32F746xx -DSTM32F746NGHx -DSTM32F746G_DISCO -DUSE_STDPERIPH_DRIVER -DUSE_HAL_DRIVER
 
 ################
 # Compiler/Assembler/Linker/etc
@@ -147,6 +188,11 @@ $(OBJDIR) :
 	mkdir $(OBJDIR)/FreeRTOS/portable/GCC/
 	mkdir $(OBJDIR)/FreeRTOS/portable/GCC/ARM_CM4F
 	mkdir $(OBJDIR)/FreeRTOS/portable/MemMang
+	
+	mkdir $(OBJDIR)/lib/
+	mkdir $(OBJDIR)/lib/Config
+	mkdir $(OBJDIR)/lib/STM32F7xx_StdPeriph_Driver/
+	mkdir $(OBJDIR)/lib/STM32F7xx_StdPeriph_Driver/src
 
 clean:
 	#$(RM) $(OBJS) $(PROJECT).elf $(PROJECT).hex $(PROJECT).map
