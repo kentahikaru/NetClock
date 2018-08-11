@@ -20,6 +20,21 @@ SOURCES_C += startup/system_stm32f7xx.c
 #SOURCES_C += lib/Driver/BSP/STM32746G-Discovery/stm32746g_discovery.c
 #SOURCES_C += lib/STM32F7xx_StdPeriph_Driver/src/stm32f7xx_gpio.c
 
+#FreeRTOS^M
+#SOURCES_C += src/FreeRTOS/CMSIS_RTOS/cmsis_os.c
+SOURCES_C += src/FreeRTOS/portable/GCC/ARM_CM4F/port.c
+SOURCES_C += src/FreeRTOS/portable/MemMang/heap_4.c
+SOURCES_C += src/FreeRTOS/croutine.c
+SOURCES_C += src/FreeRTOS/list.c
+SOURCES_C += src/FreeRTOS/queue.c
+SOURCES_C += src/FreeRTOS/tasks.c
+SOURCES_C += src/FreeRTOS/timers.c
+#SOURCES_C += src/FreeRTOS/event_groups.c
+
+
+
+
+
 SOURCES_CPP =
 
 SOURCES = $(SOURCES_S) $(SOURCES_C) $(SOURCES_CPP)
@@ -29,12 +44,17 @@ OBJS = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(basename $(SOURCES)) ))
 ################
 # Includes and Defines
 
-INCLUDES += -I . -I src -I sys
+INCLUDES += -I . -I inc -I sys
 INCLUDES += -I src
 INCLUDES += -I lib/Driver/CMSIS/Include
 INCLUDES += -I lib/Driver/CMSIS/Device/ST/STM32F7xx/Include
 INCLUDES += -I lib/Driver/BSP/STM32746G-Discovery_SPL/
 INCLUDES += -I lib/STM32F7xx_StdPeriph_Driver/inc
+
+#INCLUDES += -IFreeRTOS/CMSIS_RTOS
+INCLUDES += -Isrc/FreeRTOS/include
+INCLUDES += -Isrc/FreeRTOS/portable/GCC/ARM_CM4F
+
 
 DEFINES = -DSTM32 -DSTM32F7 -DSTM32F746xx -DSTM32F746NGHx -DSTM32F746G_DISCO 
 
@@ -120,8 +140,13 @@ $(OBJS): | $(OBJDIR)  # order-only-prerequisite, make directories before making 
 
 $(OBJDIR) :
 	mkdir $(OBJDIR)
-	mkdir $(OBJDIR)/src
 	mkdir $(OBJDIR)/startup
+	mkdir $(OBJDIR)/src/
+	mkdir $(OBJDIR)/src/FreeRTOS/
+	mkdir $(OBJDIR)/src/FreeRTOS/portable/
+	mkdir $(OBJDIR)/src/FreeRTOS/portable/GCC/
+	mkdir $(OBJDIR)/src/FreeRTOS/portable/GCC/ARM_CM4F
+	mkdir $(OBJDIR)/src/FreeRTOS/portable/MemMang
 
 clean:
 	#$(RM) $(OBJS) $(PROJECT).elf $(PROJECT).hex $(PROJECT).map
