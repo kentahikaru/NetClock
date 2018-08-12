@@ -92,7 +92,7 @@
 /************************* Miscellaneous Configuration ************************/
 /*!< Uncomment the following line if you need to use external SRAM or SDRAM mounted
      on STMicroelectronics EVAL/Discovery boards as data memory  */
-/*!< In case of EVAL/Discovery’s LCD use in application code, the DATA_IN_ExtSDRAM define
+/*!< In case of EVAL/Discovery���s LCD use in application code, the DATA_IN_ExtSDRAM define
      need to be added  in the project preprocessor to avoid SDRAM multiple configuration
      (the LCD uses SDRAM as frame buffer, and its configuration is done by the BSP_SDRAM_Init()) */
 /* #define DATA_IN_ExtSRAM */ 
@@ -193,7 +193,99 @@ void SystemInit(void)
 #else
   SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH */
 #endif
+
+  SetSysClock();
 }
+
+
+/**
+  * @brief  Configures the System clock source, PLL Multiplier and Divider factors,
+  *         AHB/APBx prescalers and Flash settings
+  * @Note   This function should be called only once the RCC clock configuration
+  *         is reset to the default reset state (done in SystemInit() function).
+  * @param  None
+  * @retval None
+  */
+void SetSysClock(void)
+{
+/******************************************************************************/
+/*            PLL (clocked by HSE) used as System clock source                */
+/******************************************************************************/
+  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+
+  /* Enable HSE */
+  RCC->CR |= ((uint32_t)RCC_CR_HSEON);
+
+  /* Wait till HSE is ready and if Time out is reached exit */
+  do
+  {
+	HSEStatus = RCC->CR & RCC_CR_HSERDY;
+	StartUpCounter++;
+  } while((HSEStatus == 0) && (StartUpCounter != HSE_STARTUP_TIMEOUT));
+
+  if ((RCC->CR & RCC_CR_HSERDY) != RESET)
+  {
+	HSEStatus = (uint32_t)0x01;
+  }
+  else
+  {
+	HSEStatus = (uint32_t)0x00;
+  }
+
+  if (HSEStatus == (uint32_t)0x01)
+  {
+	/* Select regulator voltage output Scale 1 mode, System frequency up to 168 MHz */
+	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+	PWR->CR1 |= PWR_CR1_VOS;
+
+	/* HCLK = SYSCLK / 1*/
+	RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
+
+	/* PCLK2 = HCLK / 1*/
+	RCC->CFGR |= RCC_CFGR_PPRE2_DIV1;
+
+	/* PCLK1 = HCLK / 2*/
+	RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;
+
+	/* MCO2 PLL selected */
+	RCC->CFGR |= RCC_CFGR_MCO2;
+
+	/* MCO2 prescaler division 5 */
+	RCC->CFGR |= RCC_CFGR_MCO1PRE;
+
+	/* Configure the main PLL */ /* PLLM = 10; PLLN = 172; PLLP = 2; PLLQ = 2, PLLSRC = HSE */
+	RCC->PLLCFGR = RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLSRC_HSE | RCC_PLLCFGR_PLLN | RCC_PLLCFGR_PLLN_7 | \
+			RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_3 | RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLM_3 | RCC_PLLCFGR_PLLM_1;
+
+
+	/* Enable the main PLL */
+	RCC->CR |= RCC_CR_PLLON;
+
+	/* Wait till the main PLL is ready */
+	while((RCC->CR & RCC_CR_PLLRDY) == 0)
+	{
+	}
+
+	/* Configure Flash prefetch, Instruction cache, Data cache and wait state */
+	//FLASH->ACR = FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_1WS;
+
+	/* Select the main PLL as system clock source */
+	RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+	RCC->CFGR |= RCC_CFGR_SW_PLL;
+
+	/* Wait till the main PLL is used as system clock source */
+	while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL);
+	{
+	}
+  }
+  else
+  { /* If HSE fails to start-up, the application will have wrong clock
+		 configuration. User can add here some code to deal with this error */
+  }
+
+}
+
+
 
 /**
    * @brief  Update SystemCoreClock variable according to Clock Register Values.
