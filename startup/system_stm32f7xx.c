@@ -248,7 +248,7 @@ void SetSysClock(void)
 	RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;
 
 	/* MCO2 PLL selected */
-	RCC->CFGR |= RCC_CFGR_MCO2;
+	RCC->CFGR |= RCC_CFGR_MCO1;
 
 	/* MCO2 prescaler division 5 */
 	RCC->CFGR |= RCC_CFGR_MCO1PRE;
